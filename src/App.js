@@ -6,7 +6,7 @@ import './App.css';
 function App() {
   return (
     <div className="App">
-      <RideView></RideView>
+      <RideView rideID='5f2f7ada702d3015e4d16290'></RideView>
     </div>
   );
 }
