@@ -1,12 +1,16 @@
 import React from 'react'
 import Grid from '@material-ui/core/Grid'
-import { Map, TileLayer } from 'react-leaflet'
+import { Map, TileLayer, Polyline } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 
 
-// Convert the long/lat to numbers we can use and store in state.
+// Convert the long/lat to numbers we can use.
 function getLongLatFloat(records) {
-    return(records.map(d => [parseFloat(d.position_lat), parseFloat(d.position_long)]))
+    console.log(records)
+    return (records.filter(r => {
+        if(r.position_lat && r.position_long)
+            return r
+        }).map(d => [parseFloat(d.position_lat), parseFloat(d.position_long)]))
 }
 
 // Find center for map placement.
@@ -15,20 +19,12 @@ function getCenter(records) {
     const minmax_long = [Math.min(...records.map(d => d[1])), Math.max(...records.map(d => d[1]))];
 
     // Do some math and sheeeit to figure out the middle point between the min/max lat and long.
-    // const center = [Math.abs(minmax_lat[0] - minmax_lat[1]), Math.abs(minmax_long[0] - minmax_long[1])]
-    const center = [(minmax_lat[0] + minmax_lat[1]) / 2, (minmax_long[0] + minmax_long[1]) / 2]
-    return(center) 
+    return [(minmax_lat[0] + minmax_lat[1]) / 2, (minmax_long[0] + minmax_long[1]) / 2]
 }
 
-function RideView(props) {
-    const {rideID} = props
+function RideView({rideID}) {
     const [zoom, setZoom] = React.useState(13)
-
-    const [download, setDownload] = React.useState({
-        loaded: false,
-        error: null
-    })
-
+    const [download, setDownload] = React.useState({ loaded: false, error: null })
     const [title, setTitle] = React.useState()
     const [description, setDescription] = React.useState()
     const [rideData, setRideData] = React.useState()
@@ -46,8 +42,10 @@ function RideView(props) {
                 // Get description.
                 setDescription(ride.description)
 
-                // Set ride data
+                // Set ride data.
                 setRideData(JSON.parse(ride.rideData))
+                
+                // Set download status
                 setDownload({loaded: true, error: null})  
             }).catch(error => {
                 setDownload({loaded: false, error: error})
@@ -64,19 +62,16 @@ function RideView(props) {
                 {download.error && <h3>{download.error}</h3>} 
                 {download.loaded && 
                     <Map style={{height: '300px', width:'auto'}} 
-                        center={getCenter(getLongLatFloat(
-                            rideData.records.filter(r => {
-                                if(r.position_lat && r.position_long) {
-                                    return r
-                                }
-                                })
-                            ))}
-                        zoom={zoom}>
+                        center={getCenter(getLongLatFloat(rideData.records))}
+                        zoom={zoom}
+                        bounds={getLongLatFloat(rideData.records)}
+                        >
                         
                         <TileLayer
                             attribution='&copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         />
+                        <Polyline positions = {getLongLatFloat(rideData.records)}></Polyline>
                     </Map>
                 }
             </Grid> 
