@@ -1,12 +1,12 @@
 import React from 'react';
-import logo from './logo.svg';
 import MemeCycleMain from './components/MemeCycleMain/MemeCycleMain'
+import RideView from './components/RideView/RideView'
 import './App.css';
 
 function App() {
   return (
     <div className="App">
-      <MemeCycleMain></MemeCycleMain>
+      <RideView rideID='5f2f7ada702d3015e4d16290'></RideView>
     </div>
   );
 }

@@ -2,6 +2,8 @@ import React from 'react'
 import Grid from '@material-ui/core/Grid'
 import RideUploader from '../RideUploader/RideUploader'
 import RideList from '../RideList/RideList'
+import RideView from '../RideView/RideView'
+
 function MemeCycle(props) {
 
     return (
@@ -17,6 +19,10 @@ function MemeCycle(props) {
 
             <Grid item>
                 <RideList></RideList>
+            </Grid>
+
+            <Grid item>
+                <RideView></RideView>
             </Grid>
         </Grid>
     )
