@@ -1,9 +1,10 @@
 import React from 'react'
 import Grid from '@material-ui/core/Grid'
+import Container from '@material-ui/core/Container'
 import { Map, TileLayer, Polyline, Marker } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import L from 'leaflet'
-import { purple } from '@material-ui/core/colors'
+import ElevationChart from '../ElevationChart/ElevationChart'
 
 delete L.Icon.Default.prototype._getIconUrl;
 
@@ -16,12 +17,20 @@ L.Icon.Default.mergeOptions({
 
 // Convert the long/lat to numbers we can use.
 function getLongLatFloat(records) {
-    console.log(records)
     return (records.filter(r => {
         if(r.position_lat && r.position_long)
             return r
         }).map(d => [parseFloat(d.position_lat), parseFloat(d.position_long)]))
 }
+
+// Get elevation and distance data.
+function getElevationAtDistance(records) {
+    return (records.filter(r => {
+        if(r.altitude && r.distance)
+            return r
+        }).map(d => [parseFloat(d.distance), parseFloat(d.altitude)]))
+}
+
 
 // Find center for map placement.
 function getCenter(records) {
@@ -74,7 +83,7 @@ function RideView({rideID}) {
         return(
             <Grid direction='column' container>
                 <h1>Error!!</h1>
-                <p>{download.error}</p>
+                <p>{download.error.toString()}</p>
             </Grid>
         )
     } else if(!download.loaded) {
@@ -84,7 +93,10 @@ function RideView({rideID}) {
             </Grid>
         )
     } else {
+    console.log(getElevationAtDistance(rideData.records))
         return(
+            <Container>
+
             <Grid direction='column' container>
                 <Grid item>
                     <h1>{title}</h1>
@@ -114,7 +126,14 @@ function RideView({rideID}) {
                 <Grid item>
                     <p>{description}</p>
                 </Grid>
+                <Grid item>
+                    <ElevationChart 
+                        elevationData={getElevationAtDistance(rideData.records).map(d => {return d[1]*10000})}
+                        distanceData={getElevationAtDistance(rideData.records).map(d => {return d[0]})}
+                    />
+                </Grid>
             </Grid>
+            </Container>
         )
     }
 }
