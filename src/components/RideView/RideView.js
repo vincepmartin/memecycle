@@ -28,9 +28,13 @@ function getElevationAtDistance(records) {
     return (records.filter(r => {
         if(r.altitude && r.distance)
             return r
-        }).map(d => [parseFloat(d.distance), parseFloat(d.altitude)]))
+        }).map(d => [parseFloat(d.distance).toFixed(1), getFeetFromMiles(parseFloat(d.altitude))]))
 }
 
+// Convert miles to feet.
+function getFeetFromMiles(miles) {
+    return (miles * 5280).toFixed(2)
+}
 
 // Find center for map placement.
 function getCenter(records) {
@@ -39,6 +43,11 @@ function getCenter(records) {
 
     // Do some math and sheeeit to figure out the middle point between the min/max lat and long.
     return [(minmax_lat[0] + minmax_lat[1]) / 2, (minmax_long[0] + minmax_long[1]) / 2]
+}
+
+function formatDate(date) {
+    const td = new Date(date)
+    return (`${td.getMonth()}/${td.getDay()}/${td.getFullYear()} - ${td.toLocaleTimeString()}`)
 }
 
 function RideView({rideID}) {
@@ -93,14 +102,13 @@ function RideView({rideID}) {
             </Grid>
         )
     } else {
-    console.log(getElevationAtDistance(rideData.records))
         return(
             <Container>
 
             <Grid direction='column' container>
                 <Grid item>
                     <h1>{title}</h1>
-                    <h3>{rideData.activity.timestamp}</h3>
+                    <h3>{formatDate(rideData.activity.timestamp)}</h3>
                 </Grid>
                 <Grid item>
                     <Map style={{height: '300px', width:'auto'}} 
@@ -119,16 +127,16 @@ function RideView({rideID}) {
                     </Map>
                 </Grid> 
                 <Grid container direction="row" justify="center" alignItems="center" spacing={5}>
-                        <Grid item><h5>Distance: {rideData.sessions[0].total_distance}</h5></Grid>
-                        <Grid item><h5>Feet Climbed: {rideData.sessions[0].total_ascent*1000}</h5></Grid>
-                        <Grid item><h5>Feet Descended: {rideData.sessions[0].total_descent*1000}</h5></Grid>
+                        <Grid item><h5>Distance: {rideData.sessions[0].total_distance.toFixed(2)}</h5></Grid>
+                        <Grid item><h5>Feet Climbed: {(rideData.sessions[0].total_ascent).toFixed(2)}</h5></Grid>
+                        <Grid item><h5>Feet Descended: {(rideData.sessions[0].total_descent).toFixed(2)}</h5></Grid>
                 </Grid>
                 <Grid item>
                     <p>{description}</p>
                 </Grid>
                 <Grid item>
                     <ElevationChart 
-                        elevationData={getElevationAtDistance(rideData.records).map(d => {return d[1]*10000})}
+                        elevationData={getElevationAtDistance(rideData.records).map(d => {return d[1]})}
                         distanceData={getElevationAtDistance(rideData.records).map(d => {return d[0]})}
                     />
                 </Grid>

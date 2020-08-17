@@ -3,10 +3,7 @@ import {Line} from 'react-chartjs-2'
 
 function ElevationChart(props) {
     const {elevationData, distanceData, width, height} = props
-    console.log('ELEVATION')
-    console.log(elevationData)
     const data = {
-        // labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
         labels: distanceData,
         datasets: [
           {
@@ -28,8 +25,7 @@ function ElevationChart(props) {
             pointHoverBorderWidth: 2,
             pointRadius: 1,
             pointHitRadius: 10,
-            // data: [65, 59, 80, 81, 56, 55, 40]
-            data: elevationData
+            data: elevationData,
           }
         ]
     }
