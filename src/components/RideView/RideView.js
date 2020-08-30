@@ -5,6 +5,7 @@ import { Map, TileLayer, Polyline, Marker } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import L from 'leaflet'
 import ElevationChart from '../ElevationChart/ElevationChart'
+import {useLocation} from 'react-router'
 
 delete L.Icon.Default.prototype._getIconUrl;
 
@@ -14,6 +15,11 @@ L.Icon.Default.mergeOptions({
     shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
     color: 'purple'
 })
+
+// Grab some query params pased via url.
+function useQuery() {
+    return new URLSearchParams(useLocation().search);
+}
 
 // Convert the long/lat to numbers we can use.
 function getLongLatFloat(records) {
@@ -50,14 +56,21 @@ function formatDate(date) {
     return (`${td.getMonth()}/${td.getDay()}/${td.getFullYear()} - ${td.toLocaleTimeString()}`)
 }
 
-function RideView({rideID}) {
+// function RideView({rideID}) {
+
+// Altering for use with react-router query params.
+function RideView({match, location}) {
     const [zoom, setZoom] = React.useState(13)
     const [download, setDownload] = React.useState({ loaded: false, error: null })
     const [title, setTitle] = React.useState()
     const [description, setDescription] = React.useState()
     const [rideData, setRideData] = React.useState()
-
-
+    
+    console.log('************** React router stuff ***********')
+    console.log(match)
+    console.log(location)
+    const rideID = match.params.rideID
+    
     // TODO: Come back and clean up the error handling. 
     // a. How do we figure out if we have a proper data response?  Check each one?
     // b. Do this all up front in bulk?
