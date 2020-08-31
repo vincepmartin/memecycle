@@ -3,7 +3,7 @@ import {Grid, Button} from '@material-ui/core'
 import {DropzoneArea} from 'material-ui-dropzone'
 import {useHistory} from 'react-router-dom'
  
-function RideUploader(props) {
+function RideUploader(props, maxImages) {
     const [files, setFiles] = React.useState([])
     const [rideID, setRideID] = React.useState()
     const [loading, setLoading] = React.useState(false)
@@ -25,15 +25,22 @@ function RideUploader(props) {
         const formData = new FormData()
         console.log(files)
 
-        // Check to see if we have a .fit file.
-        console.log('Try to find the .fit file if avaliable.') 
-        console.log(files.find(f => f.name.endsWith('.fit')))
-        console.log(files.find(f => f.name.endsWith('.jpg')))
-
-        // TODO: In a spot where I have to start managing multiple files. 
-        formData.append('rideFile', files[0])
-        
-        // Doo the same for the images.
+        // Add a .fit file and up to 4 images to the formData. 
+        const imagesAttached = 0 
+        files.forEach(file => {
+            console.log(`*** Processinig ${file}`) 
+            if(file.name.endsWith('.fit')) {
+                console.log('\tAdding fit file.')
+                formData.append('rideFile', file)
+            }
+            else {
+                if (imagesAttached < maxImages) {
+                    imagesAttached += 1
+                    console.log(`\t*** Appending ${imagesAttached}`)
+                    formData.append(`image${imagesAttached}`, file)
+                }
+            }
+        })
 
         fetch('http://localhost:8080/rides', {
             method: 'POST',
@@ -69,18 +76,22 @@ function RideUploader(props) {
                 <h1>Share a ride</h1>
             </Grid>
             <Grid item>
-                <DropzoneArea onChange={handleChange}/>
+                <DropzoneArea onChange={handleChange} filesLimit={5} acceptedFiles={['image/*', '.fit']}/>
             </Grid>
            <Grid item>
                 <p>Upload a .fit file and some pictures of your ride!</p>
             </Grid>
             <Grid item>
-                <Button variant="contained" color="secondary" disabled = {(files.length === 0)} onClick ={uploadFiles}>
+                <Button variant='contained' color='primary' disabled = {(files.length === 0)} onClick ={uploadFiles}>
                     Upload
                 </Button>
             </Grid>
         </Grid>
     )
+}
+
+RideUploader.defaultProps = {
+    maxImages: 4,
 }
 
 export default RideUploader
