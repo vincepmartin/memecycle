@@ -3,7 +3,7 @@ import {Grid, Button} from '@material-ui/core'
 import {DropzoneArea} from 'material-ui-dropzone'
 import {useHistory} from 'react-router-dom'
  
-function RideUploader(props, maxImages) {
+function RideUploader({maxImages}) {
     const [files, setFiles] = React.useState([])
     const [rideID, setRideID] = React.useState()
     const [loading, setLoading] = React.useState(false)
@@ -26,17 +26,21 @@ function RideUploader(props, maxImages) {
         console.log(files)
 
         // Add a .fit file and up to 4 images to the formData. 
-        const imagesAttached = 0 
+        let imagesAttached = 0 
         files.forEach(file => {
-            console.log(`*** Processinig ${file}`) 
+            console.log('*** Processing file:') 
+            console.log(file)
             if(file.name.endsWith('.fit')) {
+                console.log(`Processing fit file: ${file.name}`)
                 console.log('\tAdding fit file.')
                 formData.append('rideFile', file)
             }
             else {
+                console.log(`Processing ${file.name}`)
+                console.log(`Images attached: ${imagesAttached} maxImages: ${maxImages}`)
                 if (imagesAttached < maxImages) {
                     imagesAttached += 1
-                    console.log(`\t*** Appending ${imagesAttached}`)
+                    console.log(`\t*** Appending: image${imagesAttached}`)
                     formData.append(`image${imagesAttached}`, file)
                 }
             }

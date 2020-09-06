@@ -65,10 +65,6 @@ function RideView({match, location}) {
     const [title, setTitle] = React.useState()
     const [description, setDescription] = React.useState()
     const [rideData, setRideData] = React.useState()
-    
-    console.log('************** React router stuff ***********')
-    console.log(match)
-    console.log(location)
     const rideID = match.params.rideID
     
     // TODO: Come back and clean up the error handling. 
