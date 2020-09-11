@@ -1,5 +1,5 @@
 import React from 'react'
-import {Grid, Button} from '@material-ui/core'
+import {Grid, Button, TextField} from '@material-ui/core'
 import {DropzoneArea} from 'material-ui-dropzone'
 import {useHistory} from 'react-router-dom'
  
@@ -8,6 +8,8 @@ function RideUploader({maxImages}) {
     const [rideID, setRideID] = React.useState()
     const [loading, setLoading] = React.useState(false)
     const [error, setError] = React.useState()
+    const [title, setTitle] = React.useState()
+    const [description, setDescription] = React.useState()
     const history = useHistory()
 
     const handleChange = (files) =>  {
@@ -23,24 +25,19 @@ function RideUploader({maxImages}) {
     const uploadFiles = () => {
         setLoading(true)
         const formData = new FormData()
-        console.log(files)
+        formData.append('title', title)
+        formData.append('description', description)
 
-        // Add a .fit file and up to 4 images to the formData. 
+        // Add a .fit file and up to 4 images to the formData.
+        // Reaaaaally hacky..
         let imagesAttached = 0 
         files.forEach(file => {
-            console.log('*** Processing file:') 
-            console.log(file)
             if(file.name.endsWith('.fit')) {
-                console.log(`Processing fit file: ${file.name}`)
-                console.log('\tAdding fit file.')
                 formData.append('rideFile', file)
             }
             else {
-                console.log(`Processing ${file.name}`)
-                console.log(`Images attached: ${imagesAttached} maxImages: ${maxImages}`)
                 if (imagesAttached < maxImages) {
                     imagesAttached += 1
-                    console.log(`\t*** Appending: image${imagesAttached}`)
                     formData.append(`image${imagesAttached}`, file)
                 }
             }
@@ -52,13 +49,10 @@ function RideUploader({maxImages}) {
         })
         .then(response => response.json())
         .then(data => {
-            console.log('ride uploaded')
-            console.log(data)
             setLoading(false)
             setRideID(data)
         })
         .catch(error => {
-            console.error(error)
             setError(error)
         })
     }
@@ -75,15 +69,31 @@ function RideUploader({maxImages}) {
                 <h3>Some error has occured!</h3> 
                 <p>{error}</p>
             </Grid>}
-
+            
             <Grid item>
-                <h1>Share a ride</h1>
+                <h1>Cruchy Dumpster</h1>
+            </Grid>
+            <Grid item>
+                <h3>Share a ride</h3>
             </Grid>
             <Grid item>
                 <DropzoneArea onChange={handleChange} filesLimit={5} acceptedFiles={['image/*', '.fit']}/>
             </Grid>
            <Grid item>
                 <p>Upload a .fit file and some pictures of your ride!</p>
+            </Grid>
+            <Grid item>
+                <TextField id="standard-basic" label='Ride Title' onChange = {(event) => setTitle(event.target.value)}/>
+            </Grid>
+            <Grid item>
+                <TextField
+                    id='ride-description'
+                    label="Ride Description"
+                    multiline
+                    rows={4}
+                    variant="filled"
+                    onChange = {(event) => {setDescription(event.target.value)}}
+                />
             </Grid>
             <Grid item>
                 <Button variant='contained' color='primary' disabled = {(files.length === 0)} onClick ={uploadFiles}>
