@@ -8,18 +8,12 @@ import ElevationChart from '../ElevationChart/ElevationChart'
 import {useLocation} from 'react-router'
 
 delete L.Icon.Default.prototype._getIconUrl;
-
 L.Icon.Default.mergeOptions({
     iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
     iconUrl: require('leaflet/dist/images/marker-icon.png'),
     shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
     color: 'purple'
 })
-
-// Grab some query params pased via url.
-function useQuery() {
-    return new URLSearchParams(useLocation().search);
-}
 
 // Convert the long/lat to numbers we can use.
 function getLongLatFloat(records) {
@@ -65,12 +59,23 @@ function RideView({match, location}) {
     const [title, setTitle] = React.useState()
     const [description, setDescription] = React.useState()
     const [rideData, setRideData] = React.useState()
+    const [photos, setPhotos] = React.useState([]) 
     const rideID = match.params.rideID
     
     // TODO: Come back and clean up the error handling. 
     // a. How do we figure out if we have a proper data response?  Check each one?
     // b. Do this all up front in bulk?
+    
+    // Load an image. 
+    const Image = ({image}) => {
+        const arrayBufferView = new Uint8Array(image.data.data)
+        const blob = new Blob([arrayBufferView], {type: 'image/jpeg'})
+        const urlCreator = window.URL || window.webkitURL
+        const imageUrl = urlCreator.createObjectURL(blob)
+        return(<img src={imageUrl}/>)
+    }
 
+    // On first load of the component go ahead and try to download the image.
     React.useEffect(() => {
         fetch(`http://localhost:8080/rides/${rideID}`)
             .then(response => {
@@ -88,10 +93,21 @@ function RideView({match, location}) {
                 // Set ride data.
                 if(ride.rideData)
                     setRideData(JSON.parse(ride.rideData))
+               
+                // Set images. (Yes I know this is a hacky way to do it...)
+                const images = ['image1', 'image2', 'image3', 'image4']
+                let tempImagesArray = []
+                images.forEach(i => {
+                    if(ride[i] !== undefined) {
+                        tempImagesArray.push(ride[i])
+                    }
+                })
+                setPhotos(tempImagesArray)
                 
                 // Set download status
                 setDownload({loaded: true, error: null})  
             }).catch(error => {
+                console.log(error)
                 setDownload({loaded: false, error: error})
             })            
     }, [])
@@ -148,6 +164,9 @@ function RideView({match, location}) {
                         elevationData={getElevationAtDistance(rideData.records).map(d => {return d[1]})}
                         distanceData={getElevationAtDistance(rideData.records).map(d => {return d[0]})}
                     />
+                </Grid>
+                <Grid container direction='row' justify='center' alignItems='center' spacing={5}>
+                    {photos && photos.map((photo,i) => <Grid item><Image image={photo}/></Grid>)}
                 </Grid>
             </Grid>
             </Container>
