@@ -12,7 +12,7 @@ ReactDOM.render(
     <Router basename='/'>
         <Switch>
             <Route exact path='/' component={RideUploader}/>
-            <Route path exact ='/ride/' component={RideList}/>
+            <Route path='/ride/' exact  component={RideList}/>
             <Route path='/ride/:rideID' component={RideView}/>
         </Switch>
     </Router>,

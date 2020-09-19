@@ -71,7 +71,7 @@ function RideUploader({maxImages}) {
             </Grid>}
             
             <Grid item>
-                <h1>Cruchy Dumpster</h1>
+                <h1>Crunchy Dumpster</h1>
             </Grid>
             <Grid item>
                 <h3>Share a ride</h3>
