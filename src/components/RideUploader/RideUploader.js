@@ -13,8 +13,6 @@ function RideUploader({maxImages}) {
     const history = useHistory()
 
     const handleChange = (files) =>  {
-        console.log('setting files')
-        console.log(files)
         setFiles(files)
     }
 
@@ -43,7 +41,7 @@ function RideUploader({maxImages}) {
             }
         })
 
-        fetch('http://localhost:8080/rides', {
+        fetch(`${process.env.REACT_APP_API_URL}/rides`, {
             method: 'POST',
             body: formData
         })
@@ -71,7 +69,7 @@ function RideUploader({maxImages}) {
             </Grid>}
             
             <Grid item>
-                <h1>Crunchy Dumpster</h1>
+                <h1>MemeCycle</h1>
             </Grid>
             <Grid item>
                 <h3>Share a ride</h3>
