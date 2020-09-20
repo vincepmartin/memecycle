@@ -6,6 +6,7 @@ import 'leaflet/dist/leaflet.css'
 import L from 'leaflet'
 import ElevationChart from '../ElevationChart/ElevationChart'
 import {useLocation} from 'react-router'
+import { FilterCenterFocusSharp } from '@material-ui/icons'
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -77,7 +78,7 @@ function RideView({match, location}) {
 
     // On first load of the component go ahead and try to download the image.
     React.useEffect(() => {
-        fetch(`http://localhost:8080/rides/${rideID}`)
+        fetch(`${process.env.REACT_APP_API_URL}/rides/${rideID}`)
             .then(response => {
                 return(response.json())
             })
