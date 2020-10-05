@@ -164,10 +164,12 @@ function RideView({match, location}) {
             <Container>
 
             <Grid direction='column' container>
-                <Grid item>
-                    <h1>{title}</h1>
-                    <h3>{/* formatDate(rideData.activity.timestamp)*/}</h3>
-                </Grid>
+                {(rideType === 'fit') &&
+                    <Grid item>
+                        <h1>{title}</h1>
+                        <h3>{formatDate(rideData.activity.timestamp)}</h3>
+                    </Grid>
+                }
                 <Grid item>
                     {/* Load FIT map */}
                     { rideType === 'fit' && 
