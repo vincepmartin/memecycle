@@ -84,9 +84,8 @@ function RideView({match, location}) {
         const blob = new Blob([arrayBufferView], {type: 'image/jpeg'})
         const urlCreator = window.URL || window.webkitURL
         const imageUrl = urlCreator.createObjectURL(blob)
-        return(<img src={imageUrl}/>)
+        return(<img width='100%' src={imageUrl}/>)
     }
-
 
     // On first load of the component go ahead and try to download the image.
     React.useEffect(() => {
