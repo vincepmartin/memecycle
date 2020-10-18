@@ -30,7 +30,7 @@ function RideUploader({maxImages}) {
         // Reaaaaally hacky..
         let imagesAttached = 0 
         files.forEach(file => {
-            if(file.name.endsWith('.fit')) {
+            if(file.name.endsWith('.fit') || file.name.endsWith('.gpx')) {
                 formData.append('rideFile', file)
             }
             else {
@@ -75,7 +75,7 @@ function RideUploader({maxImages}) {
                 <h3>Share a ride</h3>
             </Grid>
             <Grid item>
-                <DropzoneArea onChange={handleChange} filesLimit={5} acceptedFiles={['image/*', '.fit']}/>
+                <DropzoneArea onChange={handleChange} filesLimit={5} acceptedFiles={['image/*', '.fit', '.gpx']}/>
             </Grid>
            <Grid item>
                 <p>Upload a .fit file and some pictures of your ride!</p>
