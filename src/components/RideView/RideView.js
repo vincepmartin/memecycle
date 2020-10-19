@@ -5,8 +5,7 @@ import { Map, TileLayer, Polyline, Marker, GeoJSON } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import L from 'leaflet'
 import ElevationChart from '../ElevationChart/ElevationChart'
-import {useLocation} from 'react-router'
-import { FilterCenterFocusSharp } from '@material-ui/icons'
+import lineDistance from '@turf/line-distance'
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -95,7 +94,7 @@ function RideView({match, location}) {
             console.log('rideData')
             console.log(rideData)
 
-            setDistance((rideType === 'fit') ? rideData.sessions[0].total_distance.toFixed(2): 666)
+            setDistance((rideType === 'fit') ? rideData.sessions[0].total_distance.toFixed(2): lineDistance(rideData.features[0].geometry).toFixed(2))
             setDistanceUp((rideType === 'fit') ? rideData.sessions[0].total_ascent.toFixed(2): 666)
             setDistanceDown((rideType === 'fit') ? rideData.sessions[0].total_descent.toFixed(2): 666)
         }
