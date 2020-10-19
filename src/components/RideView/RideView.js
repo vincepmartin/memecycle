@@ -149,14 +149,14 @@ function RideView({match, location}) {
     if(download.error) {
         return(
             <Grid direction='column' container>
-                <h1>Error!!</h1>
+                <h1>Error!</h1>
                 <p>{download.error.toString()}</p>
             </Grid>
         )
     } else if(!download.loaded) {
         return(
             <Grid direction='column' container>
-                <h1>Loading ride...</h1>
+                <h3>Loading ride...</h3>
             </Grid>
         )
     } else {
@@ -201,7 +201,7 @@ function RideView({match, location}) {
                     }
                 </Grid> 
                 <Grid container direction="row" justify="center" alignItems="center" spacing={5}>
-                        <Grid item><h5>Distance: {distance}</h5></Grid>
+                        <Grid item><h5>Miles Traveled: {distance}</h5></Grid>
                         <Grid item><h5>Feet Climbed: {distanceUp}</h5></Grid>
                         <Grid item><h5>Feet Descended: {distanceDown}</h5></Grid>
                 </Grid>
