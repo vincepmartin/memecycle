@@ -5,8 +5,7 @@ import { Map, TileLayer, Polyline, Marker, GeoJSON } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import L from 'leaflet'
 import ElevationChart from '../ElevationChart/ElevationChart'
-import {useLocation} from 'react-router'
-import { FilterCenterFocusSharp } from '@material-ui/icons'
+import * as turf from '@turf/turf'
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -90,12 +89,7 @@ function RideView({match, location}) {
     // On first load of the component go ahead and try to download the image.
     React.useEffect(() => {
         function setDistances(rideType, rideData) {
-            console.log('*** CHECKING RIDE TYPE, IS: ')
-            console.log(rideType)
-            console.log('rideData')
-            console.log(rideData)
-
-            setDistance((rideType === 'fit') ? rideData.sessions[0].total_distance.toFixed(2): 666)
+            setDistance((rideType === 'fit') ? rideData.sessions[0].total_distance.toFixed(2): turf.length(rideData.features[0].geometry, {units: 'miles'}).toFixed(2))
             setDistanceUp((rideType === 'fit') ? rideData.sessions[0].total_ascent.toFixed(2): 666)
             setDistanceDown((rideType === 'fit') ? rideData.sessions[0].total_descent.toFixed(2): 666)
         }
@@ -149,14 +143,14 @@ function RideView({match, location}) {
     if(download.error) {
         return(
             <Grid direction='column' container>
-                <h1>Error!!</h1>
+                <h1>Error!</h1>
                 <p>{download.error.toString()}</p>
             </Grid>
         )
     } else if(!download.loaded) {
         return(
             <Grid direction='column' container>
-                <h1>Loading ride...</h1>
+                <h3>Loading ride...</h3>
             </Grid>
         )
     } else {
@@ -201,7 +195,7 @@ function RideView({match, location}) {
                     }
                 </Grid> 
                 <Grid container direction="row" justify="center" alignItems="center" spacing={5}>
-                        <Grid item><h5>Distance: {distance}</h5></Grid>
+                        <Grid item><h5>Miles Traveled: {distance}</h5></Grid>
                         <Grid item><h5>Feet Climbed: {distanceUp}</h5></Grid>
                         <Grid item><h5>Feet Descended: {distanceDown}</h5></Grid>
                 </Grid>

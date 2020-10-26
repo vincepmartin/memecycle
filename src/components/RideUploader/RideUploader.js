@@ -16,9 +16,6 @@ function RideUploader({maxImages}) {
         setFiles(files)
     }
 
-    // Check to make sure we have the proper files.  Do any prep work.
-    const checkFiles = () => {}
-    
     // Send files to the API.
     const uploadFiles = () => {
         setLoading(true)
@@ -60,40 +57,42 @@ function RideUploader({maxImages}) {
         history.push(`/ride/${rideID}`)
     }
 
+    // We are uploading something... Let them know.
+    if (loading) {
+        return(
+            <h3>Uploading ride...</h3>
+        )
+    }
+
+
     // Otherwise render our interface or errors.
     return(
-        <Grid container direction='column' justify='flex-start' alignItems='center'> 
+        <Grid container direction='column' justify='flex-start' alignItems='stretch' alignContent='center' spacing={1}> 
             {error && <Grid item>
                 <h3>Some error has occured!</h3> 
                 <p>{error}</p>
             </Grid>}
-            
-            <Grid item>
+            <Grid item xs={8}>
                 <h1>MemeCycle</h1>
             </Grid>
-            <Grid item>
-                <h3>Share a ride</h3>
+           <Grid item xs={8}>
+                <DropzoneArea onChange={handleChange} filesLimit={5} acceptedFiles={['image/*', '.fit', '.gpx']} dropzoneText='Upload a ride file (FIT/GPX) and some pictures of your ride!'/>
             </Grid>
-            <Grid item>
-                <DropzoneArea onChange={handleChange} filesLimit={5} acceptedFiles={['image/*', '.fit', '.gpx']}/>
+            <Grid item xs={8}>
+                <TextField id='standard-basic' label='Title' onChange = {(event) => setTitle(event.target.value)} fullWidth/>
             </Grid>
-           <Grid item>
-                <p>Upload a .fit file and some pictures of your ride!</p>
-            </Grid>
-            <Grid item>
-                <TextField id="standard-basic" label='Ride Title' onChange = {(event) => setTitle(event.target.value)}/>
-            </Grid>
-            <Grid item>
+            <Grid item xs={8}>
                 <TextField
                     id='ride-description'
-                    label="Ride Description"
+                    label='Description'
+                    fullWidth
                     multiline
-                    rows={4}
-                    variant="filled"
+                    rows={6}
+                    variant='filled'
                     onChange = {(event) => {setDescription(event.target.value)}}
                 />
             </Grid>
-            <Grid item>
+            <Grid item xs={8}>
                 <Button variant='contained' color='primary' disabled = {(files.length === 0)} onClick ={uploadFiles}>
                     Upload
                 </Button>
